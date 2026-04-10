@@ -1,6 +1,6 @@
 # GW2 TaskManager
 
-![logo](src/Resources/logo.png)
+<img src="src/Resources/logo.png" width="160"/>
 
 > Daily & weekly task checklist for Guild Wars 2 veterans — with GW2 API auto-sync, event timers, and dopamine animations.
 
