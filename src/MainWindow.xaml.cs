@@ -1,5 +1,7 @@
+using System.IO;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using GW2TaskManager.Models;
 using GW2TaskManager.Services;
@@ -44,6 +46,13 @@ public partial class MainWindow : Window
 
         DataContext = _vm;
         Loaded += OnLoaded;
+
+        // PublishSingleFile extrait dans %TEMP% — AppContext.BaseDirectory ne pointe pas
+        // vers le dossier de l'exe. On charge le logo depuis le vrai dossier de l'exe.
+        var exeDir = Path.GetDirectoryName(Environment.ProcessPath) ?? AppContext.BaseDirectory;
+        var logoPath = Path.Combine(exeDir, "Resources", "logo.png");
+        if (File.Exists(logoPath))
+            LogoImage.Source = new BitmapImage(new Uri(logoPath, UriKind.Absolute));
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
