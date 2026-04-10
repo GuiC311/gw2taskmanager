@@ -33,4 +33,10 @@
     </Content>
   </ItemGroup>
 
+  <!-- icon.ico : ApplicationIcon = icône exe (Win32), Resource = icône fenêtre WPF (pack URI) -->
+  <ItemGroup>
+    <None Remove="Resources\icon.ico"/>
+    <Resource Include="Resources\icon.ico"/>
+  </ItemGroup>
+
 </Project>

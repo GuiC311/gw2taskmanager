@@ -6,6 +6,7 @@
         xmlns:views="clr-namespace:GW2TaskManager.Views"
         mc:Ignorable="d"
         Title="GW2 TaskManager"
+        Icon="Resources/icon.ico"
         Height="800" Width="1100" MinHeight="600" MinWidth="900"
         Style="{StaticResource AppWindowStyle}">
 
