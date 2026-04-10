@@ -1,0 +1,88 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Flag icon shown on the language button (current language = FR) -->
+    <DrawingImage x:Key="FlagCurrent">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#002395">
+                    <GeometryDrawing.Geometry><RectangleGeometry Rect="0,0,10,15"/></GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#FFFFFF">
+                    <GeometryDrawing.Geometry><RectangleGeometry Rect="10,0,10,15"/></GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ED2939">
+                    <GeometryDrawing.Geometry><RectangleGeometry Rect="20,0,10,15"/></GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Tabs -->
+    <sys:String x:Key="Str_TabTodo">À faire</sys:String>
+    <sys:String x:Key="Str_TabCatalog">Objectifs</sys:String>
+
+    <!-- API bar -->
+    <sys:String x:Key="Str_ApiKeyLabel">Clé API GW2</sys:String>
+    <sys:String x:Key="Str_ApiHelpTitle">Où trouver votre clé API GW2 ?</sys:String>
+    <sys:String x:Key="Str_ApiHelpBody">1. Connectez-vous sur account.arena.net&#x0a;2. Allez dans Applications → Nouvelle clé&#x0a;3. Activez les permissions suivantes :</sys:String>
+    <sys:String x:Key="Str_SyncTooltip">Synchroniser maintenant</sys:String>
+    <sys:String x:Key="Str_LangTooltip">Changer la langue — EN</sys:String>
+
+    <!-- Column headers -->
+    <sys:String x:Key="Str_ColObjective">Objectif</sys:String>
+    <sys:String x:Key="Str_ColCharacter">Personnage</sys:String>
+    <sys:String x:Key="Str_ColWaypoint">Waypoint</sys:String>
+    <sys:String x:Key="Str_ColChrono">Chrono</sys:String>
+    <sys:String x:Key="Str_ColActive">Actif</sys:String>
+
+    <!-- Counts / labels -->
+    <sys:String x:Key="Str_CountTodo"> à faire</sys:String>
+    <sys:String x:Key="Str_CountDone"> faits</sys:String>
+    <sys:String x:Key="Str_CountActive"> actifs</sys:String>
+    <sys:String x:Key="Str_ResetIn">Reset dans </sys:String>
+
+    <!-- Filter / toolbar -->
+    <sys:String x:Key="Str_FilterPlaceholder">🔍  Filtrer les objectifs…</sys:String>
+    <sys:String x:Key="Str_BtnEnableAll">Tout activer</sys:String>
+    <sys:String x:Key="Str_BtnDisableAll">Tout désactiver</sys:String>
+    <sys:String x:Key="Str_BtnNewObjective">＋  Nouvel objectif</sys:String>
+
+    <!-- New Objective Dialog -->
+    <sys:String x:Key="Str_DialogTitle">Nouvel objectif</sys:String>
+    <sys:String x:Key="Str_DialogHeader">Nouvel objectif</sys:String>
+    <sys:String x:Key="Str_FieldName">Nom *</sys:String>
+    <sys:String x:Key="Str_FieldDescription">Description</sys:String>
+    <sys:String x:Key="Str_FieldType">Type *</sys:String>
+    <sys:String x:Key="Str_FieldIcon">Icône (emoji)</sys:String>
+    <sys:String x:Key="Str_FieldCharacter">Personnage</sys:String>
+    <sys:String x:Key="Str_FieldWaypoint">Code waypoint</sys:String>
+    <sys:String x:Key="Str_BtnCancel">Annuler</sys:String>
+    <sys:String x:Key="Str_BtnCreate">✓  Créer</sys:String>
+
+    <!-- API status (initial / static) -->
+    <sys:String x:Key="Str_ApiStatusNoKey">Non connecté</sys:String>
+
+    <!-- Runtime strings (read via LanguageManager.Get) -->
+    <sys:String x:Key="Str_StatusSyncing">Synchronisation…</sys:String>
+    <sys:String x:Key="Str_StatusConnected">Connecté</sys:String>
+    <sys:String x:Key="Str_StatusConnectedSync">Connecté · sync {0}</sys:String>
+    <sys:String x:Key="Str_StatusError">Erreur API</sys:String>
+    <sys:String x:Key="Str_AgeJustNow">à l'instant</sys:String>
+    <sys:String x:Key="Str_AgeSec">il y a {0}s</sys:String>
+    <sys:String x:Key="Str_AgeMin">il y a {0}min</sys:String>
+    <sys:String x:Key="Str_AgeHour">il y a {0}h</sys:String>
+    <sys:String x:Key="Str_ErrorInvalidKey">Clé invalide</sys:String>
+    <sys:String x:Key="Str_ErrorHttp">Erreur HTTP {0}</sys:String>
+    <sys:String x:Key="Str_ThemeWarmTip">Thème chaud — cliquer pour passer en sombre</sys:String>
+    <sys:String x:Key="Str_ThemeSlateTip">Thème sombre — cliquer pour passer en auto</sys:String>
+    <sys:String x:Key="Str_ThemeAutoTip">Auto (cycle jour/nuit GW2) — cliquer pour revenir en chaud</sys:String>
+    <sys:String x:Key="Str_ThemeTooltip">Changer de thème</sys:String>
+
+    <!-- Footer -->
+    <sys:String x:Key="Str_FooterMadeBy">Fait par&#x00A0;</sys:String>
+    <sys:String x:Key="Str_FooterAnd">&#x00A0;et&#x00A0;</sys:String>
+    <sys:String x:Key="Str_FooterDonation">&#x00A0;— toute donation appréciée !</sys:String>
+
+</ResourceDictionary>

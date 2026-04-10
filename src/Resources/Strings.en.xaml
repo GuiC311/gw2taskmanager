@@ -1,0 +1,105 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Flag icon shown on the language button (current language = EN) -->
+    <DrawingImage x:Key="FlagCurrent">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- Blue background -->
+                <GeometryDrawing Brush="#012169">
+                    <GeometryDrawing.Geometry><RectangleGeometry Rect="0,0,30,20"/></GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <!-- White Saint Andrew diagonals -->
+                <GeometryDrawing Brush="#FFFFFF">
+                    <GeometryDrawing.Geometry>
+                        <PathGeometry Figures="M0,0 L4,0 L30,18 L30,20 L26,20 L0,2 Z  M30,0 L26,0 L0,18 L0,20 L4,20 L30,2 Z"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <!-- White Saint George cross (fimbriation) — horizontal -->
+                <GeometryDrawing Brush="#FFFFFF">
+                    <GeometryDrawing.Geometry><RectangleGeometry Rect="0,7,30,6"/></GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <!-- White Saint George cross (fimbriation) — vertical -->
+                <GeometryDrawing Brush="#FFFFFF">
+                    <GeometryDrawing.Geometry><RectangleGeometry Rect="12,0,6,20"/></GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <!-- Red Saint George cross — horizontal -->
+                <GeometryDrawing Brush="#C8102E">
+                    <GeometryDrawing.Geometry><RectangleGeometry Rect="0,8.5,30,3"/></GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <!-- Red Saint George cross — vertical -->
+                <GeometryDrawing Brush="#C8102E">
+                    <GeometryDrawing.Geometry><RectangleGeometry Rect="13.5,0,3,20"/></GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Tabs -->
+    <sys:String x:Key="Str_TabTodo">To Do</sys:String>
+    <sys:String x:Key="Str_TabCatalog">Objectives</sys:String>
+
+    <!-- API bar -->
+    <sys:String x:Key="Str_ApiKeyLabel">GW2 API Key</sys:String>
+    <sys:String x:Key="Str_ApiHelpTitle">Where to find your GW2 API key?</sys:String>
+    <sys:String x:Key="Str_ApiHelpBody">1. Log in at account.arena.net&#x0a;2. Go to Applications → New key&#x0a;3. Enable the following permissions:</sys:String>
+    <sys:String x:Key="Str_SyncTooltip">Sync now</sys:String>
+    <sys:String x:Key="Str_LangTooltip">Change language — FR</sys:String>
+
+    <!-- Column headers -->
+    <sys:String x:Key="Str_ColObjective">Objective</sys:String>
+    <sys:String x:Key="Str_ColCharacter">Character</sys:String>
+    <sys:String x:Key="Str_ColWaypoint">Waypoint</sys:String>
+    <sys:String x:Key="Str_ColChrono">Timer</sys:String>
+    <sys:String x:Key="Str_ColActive">Active</sys:String>
+
+    <!-- Counts / labels -->
+    <sys:String x:Key="Str_CountTodo"> to do</sys:String>
+    <sys:String x:Key="Str_CountDone"> done</sys:String>
+    <sys:String x:Key="Str_CountActive"> active</sys:String>
+    <sys:String x:Key="Str_ResetIn">Reset in </sys:String>
+
+    <!-- Filter / toolbar -->
+    <sys:String x:Key="Str_FilterPlaceholder">🔍  Filter objectives…</sys:String>
+    <sys:String x:Key="Str_BtnEnableAll">Enable all</sys:String>
+    <sys:String x:Key="Str_BtnDisableAll">Disable all</sys:String>
+    <sys:String x:Key="Str_BtnNewObjective">＋  New objective</sys:String>
+
+    <!-- New Objective Dialog -->
+    <sys:String x:Key="Str_DialogTitle">New objective</sys:String>
+    <sys:String x:Key="Str_DialogHeader">New objective</sys:String>
+    <sys:String x:Key="Str_FieldName">Name *</sys:String>
+    <sys:String x:Key="Str_FieldDescription">Description</sys:String>
+    <sys:String x:Key="Str_FieldType">Type *</sys:String>
+    <sys:String x:Key="Str_FieldIcon">Icon (emoji)</sys:String>
+    <sys:String x:Key="Str_FieldCharacter">Character</sys:String>
+    <sys:String x:Key="Str_FieldWaypoint">Waypoint code</sys:String>
+    <sys:String x:Key="Str_BtnCancel">Cancel</sys:String>
+    <sys:String x:Key="Str_BtnCreate">✓  Create</sys:String>
+
+    <!-- API status (initial / static) -->
+    <sys:String x:Key="Str_ApiStatusNoKey">Not connected</sys:String>
+
+    <!-- Runtime strings (read via LanguageManager.Get) -->
+    <sys:String x:Key="Str_StatusSyncing">Syncing…</sys:String>
+    <sys:String x:Key="Str_StatusConnected">Connected</sys:String>
+    <sys:String x:Key="Str_StatusConnectedSync">Connected · sync {0}</sys:String>
+    <sys:String x:Key="Str_StatusError">API error</sys:String>
+    <sys:String x:Key="Str_AgeJustNow">just now</sys:String>
+    <sys:String x:Key="Str_AgeSec">{0}s ago</sys:String>
+    <sys:String x:Key="Str_AgeMin">{0}min ago</sys:String>
+    <sys:String x:Key="Str_AgeHour">{0}h ago</sys:String>
+    <sys:String x:Key="Str_ErrorInvalidKey">Invalid key</sys:String>
+    <sys:String x:Key="Str_ErrorHttp">HTTP error {0}</sys:String>
+    <sys:String x:Key="Str_ThemeWarmTip">Warm theme — click to switch to dark</sys:String>
+    <sys:String x:Key="Str_ThemeSlateTip">Dark theme — click to switch to auto</sys:String>
+    <sys:String x:Key="Str_ThemeAutoTip">Auto (GW2 day/night cycle) — click to go back to warm</sys:String>
+    <sys:String x:Key="Str_ThemeTooltip">Change theme</sys:String>
+
+    <!-- Footer -->
+    <sys:String x:Key="Str_FooterMadeBy">Made by&#x00A0;</sys:String>
+    <sys:String x:Key="Str_FooterAnd">&#x00A0;and&#x00A0;</sys:String>
+    <sys:String x:Key="Str_FooterDonation">&#x00A0;— all donations appreciated !</sys:String>
+
+</ResourceDictionary>

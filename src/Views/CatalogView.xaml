@@ -1,0 +1,367 @@
+﻿<UserControl x:Class="GW2TaskManager.Views.CatalogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:GW2TaskManager.ViewModels"
+             mc:Ignorable="d"
+             Background="{DynamicResource Bg0Brush}">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+        <!-- Task row hover trigger -->
+        <Style x:Key="CatalogRowStyle" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource Bg1Brush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource LineBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="Margin" Value="0,2"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource Bg2Brush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Disabled row -->
+        <Style x:Key="CatalogRowDisabledStyle" TargetType="Border" BasedOn="{StaticResource CatalogRowStyle}">
+            <Setter Property="Opacity" Value="0.5"/>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Toolbar -->
+            <RowDefinition Height="*"/>     <!-- Scrollable list -->
+        </Grid.RowDefinitions>
+
+        <!-- ====== Toolbar ====== -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource Bg1Brush}"
+                BorderBrush="{DynamicResource LineBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="20,10">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <!-- Filter box -->
+                <TextBox x:Name="FilterBox" Width="260" Margin="0,0,12,0"
+                         FontSize="13"
+                         Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
+                         TextChanged="FilterBox_TextChanged">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                            <Style.Triggers>
+                                <Trigger Property="Text" Value="">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                                                <VisualBrush.Visual>
+                                                    <TextBlock Text="{DynamicResource Str_FilterPlaceholder}"
+                                                               Foreground="#8A7A60" FontSize="12"
+                                                               Margin="10,0"/>
+                                                </VisualBrush.Visual>
+                                            </VisualBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+
+                <!-- Action buttons -->
+                <Button Content="{DynamicResource Str_BtnEnableAll}" Margin="0,0,8,0"
+                        Style="{StaticResource GhostButtonStyle}"
+                        Command="{Binding EnableAllCommand}"/>
+                <Button Content="{DynamicResource Str_BtnDisableAll}" Margin="0,0,16,0"
+                        Style="{StaticResource GhostButtonStyle}"
+                        Command="{Binding DisableAllCommand}"/>
+                <Button Content="{DynamicResource Str_BtnNewObjective}"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Padding="12,6"
+                        Click="AddObjective_Click"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ====== Scrollable content ====== -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20,16,20,20">
+
+                <!-- ========== DAILY section ========== -->
+                <StackPanel x:Name="DailySection">
+
+                    <!-- Section header -->
+                    <Border Style="{StaticResource SectionSeparatorStyle}" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Style="{StaticResource BadgeDailyStyle}" Margin="0,0,12,8">
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="3" Height="14" Fill="{DynamicResource GoldBrush}"
+                                               Margin="0,0,8,0" RadiusX="2" RadiusY="2"/>
+                                    <TextBlock Text="DAILY" FontWeight="SemiBold" FontSize="11"
+                                               Foreground="{DynamicResource GoldBrush}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="0,0,0,8">
+                                <Run x:Name="DailyEnabledCount" Text="" Foreground="{DynamicResource Text0Brush}" FontWeight="SemiBold"/>
+                                <Run Text="{DynamicResource Str_CountActive}" Foreground="{DynamicResource Text2Brush}" FontSize="12"/>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+
+                    <!-- Column headers -->
+                    <Grid Margin="12,0,12,6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="90"/>
+                            <ColumnDefinition Width="44"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="1" Text="{DynamicResource Str_ColObjective}" Foreground="{DynamicResource Text2Brush}" FontSize="11"/>
+                        <TextBlock Grid.Column="2" Text="{DynamicResource Str_ColCharacter}" Foreground="{DynamicResource Text2Brush}" FontSize="11"/>
+                        <TextBlock Grid.Column="3" Text="{DynamicResource Str_ColWaypoint}" Foreground="{DynamicResource Text2Brush}" FontSize="11" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="4" Text="{DynamicResource Str_ColActive}" Foreground="{DynamicResource Text2Brush}" FontSize="11" HorizontalAlignment="Center"/>
+                    </Grid>
+
+                    <!-- Daily rows -->
+                    <ItemsControl x:Name="DailyList" ItemsSource="{Binding DailyItems}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:TaskItemViewModel}">
+                                <Border x:Name="RowBorder" Style="{StaticResource CatalogRowStyle}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="36"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="140"/>
+                                            <ColumnDefinition Width="90"/>
+                                            <ColumnDefinition Width="44"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Icon -->
+                                        <Border Grid.Column="0" Width="32" Height="32"
+                                                Background="{DynamicResource Bg2Brush}"
+                                                BorderBrush="{DynamicResource LineBrush}"
+                                                BorderThickness="1" CornerRadius="4"
+                                                VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Icon}" FontSize="16"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+
+                                        <!-- Name + Description -->
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0">
+                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold"
+                                                       FontSize="13" Foreground="{DynamicResource Text0Brush}"/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Description}" FontSize="11"
+                                                           Foreground="{DynamicResource Text2Brush}"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                                <Border Margin="5,0,0,0" Padding="4,1" CornerRadius="3"
+                                                        Background="#1A4F9E6A" BorderBrush="#4F9E6A" BorderThickness="1"
+                                                        VerticalAlignment="Center"
+                                                        Visibility="{Binding IsApiTracked,
+                                                            Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                    <TextBlock Text="AUTO" FontSize="9" FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource EmeraldTextBrush}"/>
+                                                </Border>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <!-- Character ComboBox -->
+                                        <ComboBox Grid.Column="2"
+                                                  Width="130" IsEditable="True" FontSize="12" Padding="6,4"
+                                                  VerticalAlignment="Center"
+                                                  Text="{Binding Character, UpdateSourceTrigger=PropertyChanged}"
+                                                  ItemsSource="{Binding DataContext.Characters,
+                                                      RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+                                        <!-- Waypoint link -->
+                                        <Button Grid.Column="3" VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
+                                                Style="{StaticResource LinkButtonStyle}"
+                                                Click="CopyLink_Click"
+                                                Tag="{Binding LinkCode}">
+                                            <TextBlock>
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text" Value="{Binding LinkCode}"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource GoldBrush}"/>
+                                                        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding LinkCode}" Value="">
+                                                                <Setter Property="Text" Value="—"/>
+                                                                <Setter Property="Foreground" Value="{DynamicResource Text2Brush}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Button>
+
+                                        <!-- Toggle -->
+                                        <CheckBox Grid.Column="4" VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"
+                                                  Style="{StaticResource ToggleStyle}"
+                                                  IsChecked="{Binding IsEnabled}"
+                                                  Checked="Toggle_Changed"
+                                                  Unchecked="Toggle_Changed"/>
+                                    </Grid>
+                                </Border>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding IsEnabled}" Value="False">
+                                        <Setter TargetName="RowBorder" Property="Opacity" Value="0.5"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- ========== WEEKLY section ========== -->
+                <StackPanel x:Name="WeeklySection" Margin="0,24,0,0">
+
+                    <!-- Section header -->
+                    <Border Style="{StaticResource SectionSeparatorStyle}" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Style="{StaticResource BadgeWeeklyStyle}" Margin="0,0,12,8">
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="3" Height="14" Fill="{DynamicResource AmberBrush}"
+                                               Margin="0,0,8,0" RadiusX="2" RadiusY="2"/>
+                                    <TextBlock Text="WEEKLY" FontWeight="SemiBold" FontSize="11"
+                                               Foreground="{DynamicResource AmberBrush}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="0,0,0,8">
+                                <Run x:Name="WeeklyEnabledCount" Text="" Foreground="{DynamicResource Text0Brush}" FontWeight="SemiBold"/>
+                                <Run Text="{DynamicResource Str_CountActive}" Foreground="{DynamicResource Text2Brush}" FontSize="12"/>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+
+                    <!-- Column headers -->
+                    <Grid Margin="12,0,12,6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="90"/>
+                            <ColumnDefinition Width="44"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="1" Text="{DynamicResource Str_ColObjective}" Foreground="{DynamicResource Text2Brush}" FontSize="11"/>
+                        <TextBlock Grid.Column="2" Text="{DynamicResource Str_ColCharacter}" Foreground="{DynamicResource Text2Brush}" FontSize="11"/>
+                        <TextBlock Grid.Column="3" Text="{DynamicResource Str_ColWaypoint}" Foreground="{DynamicResource Text2Brush}" FontSize="11" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="4" Text="{DynamicResource Str_ColActive}" Foreground="{DynamicResource Text2Brush}" FontSize="11" HorizontalAlignment="Center"/>
+                    </Grid>
+
+                    <!-- Weekly rows -->
+                    <ItemsControl x:Name="WeeklyList" ItemsSource="{Binding WeeklyItems}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:TaskItemViewModel}">
+                                <Border x:Name="RowBorder" Style="{StaticResource CatalogRowStyle}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="36"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="140"/>
+                                            <ColumnDefinition Width="90"/>
+                                            <ColumnDefinition Width="44"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Icon -->
+                                        <Border Grid.Column="0" Width="32" Height="32"
+                                                Background="{DynamicResource Bg2Brush}"
+                                                BorderBrush="{DynamicResource LineBrush}"
+                                                BorderThickness="1" CornerRadius="4"
+                                                VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Icon}" FontSize="16"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+
+                                        <!-- Name + Description -->
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0">
+                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold"
+                                                       FontSize="13" Foreground="{DynamicResource Text0Brush}"/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Description}" FontSize="11"
+                                                           Foreground="{DynamicResource Text2Brush}"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                                <Border Margin="5,0,0,0" Padding="4,1" CornerRadius="3"
+                                                        Background="#1A4F9E6A" BorderBrush="#4F9E6A" BorderThickness="1"
+                                                        VerticalAlignment="Center"
+                                                        Visibility="{Binding IsApiTracked,
+                                                            Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                    <TextBlock Text="AUTO" FontSize="9" FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource EmeraldTextBrush}"/>
+                                                </Border>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <!-- Character ComboBox -->
+                                        <ComboBox Grid.Column="2"
+                                                  Width="130" IsEditable="True" FontSize="12" Padding="6,4"
+                                                  VerticalAlignment="Center"
+                                                  Text="{Binding Character, UpdateSourceTrigger=PropertyChanged}"
+                                                  ItemsSource="{Binding DataContext.Characters,
+                                                      RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+                                        <!-- Waypoint link -->
+                                        <Button Grid.Column="3" VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
+                                                Style="{StaticResource LinkButtonStyle}"
+                                                Click="CopyLink_Click"
+                                                Tag="{Binding LinkCode}">
+                                            <TextBlock>
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text" Value="{Binding LinkCode}"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource GoldBrush}"/>
+                                                        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding LinkCode}" Value="">
+                                                                <Setter Property="Text" Value="—"/>
+                                                                <Setter Property="Foreground" Value="{DynamicResource Text2Brush}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Button>
+
+                                        <!-- Toggle -->
+                                        <CheckBox Grid.Column="4" VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"
+                                                  Style="{StaticResource ToggleStyle}"
+                                                  IsChecked="{Binding IsEnabled}"
+                                                  Checked="Toggle_Changed"
+                                                  Unchecked="Toggle_Changed"/>
+                                    </Grid>
+                                </Border>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding IsEnabled}" Value="False">
+                                        <Setter TargetName="RowBorder" Property="Opacity" Value="0.5"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

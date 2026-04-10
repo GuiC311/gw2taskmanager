@@ -1,0 +1,8 @@
+# Normalise les fins de ligne : LF dans le repo, CRLF sur Windows au checkout
+* text=auto
+
+# Binaires — pas de conversion
+*.png binary
+*.ico binary
+*.exe binary
+*.dll binary

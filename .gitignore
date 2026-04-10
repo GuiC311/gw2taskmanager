@@ -1,0 +1,30 @@
+# Build output
+src/bin/
+src/obj/
+
+# Beta / release artifacts (ZIP uploadé via GitHub Releases, pas commité)
+beta/
+
+# Runtime data (générés localement par l'app)
+src/state.json
+src/settings.json
+
+# Ancien binaire sans source
+TaskManager.exe
+TaskManager.dll
+TaskManager.pdb
+TaskManager.deps.json
+TaskManager.runtimeconfig.json
+
+# Fichier de référence original (remplacé par src/Data/tasks.json)
+tasks.json
+
+# IDE & OS
+.vs/
+*.user
+*.suo
+.DS_Store
+Thumbs.db
+
+# Mémoire interne Claude (non pertinent pour les contributeurs)
+CLAUDE.md

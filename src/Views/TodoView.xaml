@@ -1,0 +1,349 @@
+﻿<UserControl x:Class="GW2TaskManager.Views.TodoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:GW2TaskManager.ViewModels"
+             mc:Ignorable="d"
+             Background="{DynamicResource Bg0Brush}">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+        <!-- Task row hover -->
+        <Style x:Key="TodoRowStyle" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource Bg1Brush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource LineBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="Margin" Value="0,2"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource Bg2Brush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Done row -->
+        <Style x:Key="TodoRowDoneStyle" TargetType="Border" BasedOn="{StaticResource TodoRowStyle}">
+            <Setter Property="Opacity" Value="0.55"/>
+        </Style>
+
+        <!-- Collapsible done zone header button -->
+        <Style x:Key="CollapseButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="0,8,0,4"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- DataTemplate for a task row in the To Do list -->
+        <DataTemplate x:Key="TodoTaskTemplate" DataType="{x:Type vm:TaskItemViewModel}">
+            <Border x:Name="RowBorder" Style="{StaticResource TodoRowStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="36"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="110"/>
+                        <ColumnDefinition Width="105"/>
+                        <ColumnDefinition Width="70"/>
+                        <ColumnDefinition Width="32"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Icon -->
+                    <Border Grid.Column="0" Width="32" Height="32"
+                            Background="{DynamicResource Bg2Brush}"
+                            BorderBrush="{DynamicResource LineBrush}"
+                            BorderThickness="1" CornerRadius="4"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Icon}" FontSize="16"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+
+                    <!-- Name + Description -->
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,8,0">
+                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold"
+                                   FontSize="13" Foreground="{DynamicResource Text0Brush}"
+                                   TextTrimming="CharacterEllipsis"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Description}" FontSize="11"
+                                       Foreground="{DynamicResource Text2Brush}"
+                                       TextTrimming="CharacterEllipsis"/>
+                            <Border Margin="5,0,0,0" Padding="4,1" CornerRadius="3"
+                                    Background="#1A4F9E6A" BorderBrush="#4F9E6A" BorderThickness="1"
+                                    VerticalAlignment="Center"
+                                    Visibility="{Binding IsApiTracked,
+                                        Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="AUTO" FontSize="9" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource EmeraldTextBrush}"/>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Character -->
+                    <Border Grid.Column="2" Background="{DynamicResource Bg2Brush}"
+                            BorderBrush="{DynamicResource LineBrush}" BorderThickness="1"
+                            CornerRadius="4" Padding="8,4" VerticalAlignment="Center"
+                            HorizontalAlignment="Left">
+                        <TextBlock Text="{Binding Character}" FontSize="12"
+                                   Foreground="{DynamicResource Text1Brush}"/>
+                    </Border>
+
+                    <!-- Waypoint link -->
+                    <Button Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center"
+                            Style="{StaticResource LinkButtonStyle}"
+                            Click="CopyLink_Click" Tag="{Binding LinkCode}">
+                        <TextBlock>
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="{Binding LinkCode}"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource GoldBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding LinkCode}" Value="">
+                                            <Setter Property="Text" Value="—"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource Text2Brush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Button>
+
+                    <!-- Timer -->
+                    <Border Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center"
+                            CornerRadius="4" Padding="6,3"
+                            Background="{Binding TimerBackground}">
+                        <TextBlock Text="{Binding TimerText}"
+                                   FontFamily="Cascadia Mono, Consolas" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="{Binding TimerForeground}"
+                                   HorizontalAlignment="Center"/>
+                    </Border>
+
+                    <!-- Checkmark -->
+                    <CheckBox Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Center"
+                              Style="{StaticResource CheckButtonStyle}"
+                              IsChecked="{Binding IsDone, Mode=OneWay}"
+                              Click="Check_Click"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <!-- DataTemplate for a done row (strikethrough name) -->
+        <DataTemplate x:Key="DoneTaskTemplate" DataType="{x:Type vm:TaskItemViewModel}">
+            <Border Style="{StaticResource TodoRowDoneStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="36"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="110"/>
+                        <ColumnDefinition Width="105"/>
+                        <ColumnDefinition Width="70"/>
+                        <ColumnDefinition Width="32"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Icon -->
+                    <Border Grid.Column="0" Width="32" Height="32"
+                            Background="{DynamicResource Bg2Brush}"
+                            BorderBrush="{DynamicResource LineBrush}"
+                            BorderThickness="1" CornerRadius="4" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Icon}" FontSize="16"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+
+                    <!-- Name strikethrough + Description -->
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,8,0">
+                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13"
+                                   Foreground="{DynamicResource Text2Brush}"
+                                   TextDecorations="Strikethrough"
+                                   TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Text="{Binding Description}" FontSize="11"
+                                   Foreground="{DynamicResource Text2Brush}"
+                                   TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
+
+                    <!-- Character -->
+                    <Border Grid.Column="2" Background="{DynamicResource Bg2Brush}"
+                            BorderBrush="{DynamicResource LineBrush}" BorderThickness="1"
+                            CornerRadius="4" Padding="8,4" VerticalAlignment="Center"
+                            HorizontalAlignment="Left">
+                        <TextBlock Text="{Binding Character}" FontSize="12"
+                                   Foreground="{DynamicResource Text2Brush}"/>
+                    </Border>
+
+                    <!-- Waypoint (disabled in done zone) -->
+                    <Button Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center"
+                            Style="{StaticResource LinkButtonStyle}" IsEnabled="False" Opacity="0.4"
+                            Tag="{Binding LinkCode}">
+                        <TextBlock Text="{Binding LinkCode}" Foreground="{DynamicResource Text2Brush}"/>
+                    </Button>
+
+                    <!-- Timer placeholder -->
+                    <TextBlock Grid.Column="4" Text="—" Foreground="{DynamicResource Text2Brush}"
+                               FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                    <!-- Uncheck -->
+                    <CheckBox Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Center"
+                              Style="{StaticResource CheckButtonStyle}"
+                              IsChecked="True"
+                              Click="Check_Click"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20,16,20,20">
+
+            <!-- ============ Column headers ============ -->
+            <Grid Margin="12,0,12,6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="36"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="110"/>
+                    <ColumnDefinition Width="105"/>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="32"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="1" Text="{DynamicResource Str_ColObjective}" Foreground="{DynamicResource Text2Brush}" FontSize="11" Margin="10,0,0,0"/>
+                <TextBlock Grid.Column="2" Text="{DynamicResource Str_ColCharacter}" Foreground="{DynamicResource Text2Brush}" FontSize="11"/>
+                <TextBlock Grid.Column="3" Text="{DynamicResource Str_ColWaypoint}" Foreground="{DynamicResource Text2Brush}" FontSize="11" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="4" Text="{DynamicResource Str_ColChrono}" Foreground="{DynamicResource Text2Brush}" FontSize="11" HorizontalAlignment="Center"/>
+            </Grid>
+
+            <!-- ============ DAILY section ============ -->
+            <Border Style="{StaticResource SectionSeparatorStyle}" Margin="0,4,0,10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Style="{StaticResource BadgeDailyStyle}" Margin="0,0,12,8">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="3" Height="14" Fill="{DynamicResource GoldBrush}"
+                                       Margin="0,0,8,0" RadiusX="2" RadiusY="2"/>
+                            <TextBlock Text="DAILY" FontWeight="SemiBold" FontSize="11"
+                                       Foreground="{DynamicResource GoldBrush}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="0,0,0,8">
+                        <Run x:Name="DailyTodoCount" FontWeight="SemiBold" Foreground="{DynamicResource Text0Brush}"/>
+                        <Run Text="{DynamicResource Str_CountTodo}" Foreground="{DynamicResource Text2Brush}" FontSize="12"/>
+                    </TextBlock>
+
+                    <Border Grid.Column="3" Style="{StaticResource ResetChipStyle}" Margin="0,0,0,8">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{DynamicResource Str_ResetIn}" Foreground="{DynamicResource Text2Brush}" FontSize="11"/>
+                            <TextBlock Text="{Binding DailyResetIn}" Foreground="{DynamicResource GoldBrush}"
+                                       FontSize="11" FontWeight="SemiBold" Margin="3,0,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <ItemsControl x:Name="DailyTodoList" ItemsSource="{Binding DailyTodo}"
+                          ItemTemplate="{StaticResource TodoTaskTemplate}"/>
+
+            <!-- ============ WEEKLY section ============ -->
+            <Border Style="{StaticResource SectionSeparatorStyle}" Margin="0,20,0,10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Style="{StaticResource BadgeWeeklyStyle}" Margin="0,0,12,8">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="3" Height="14" Fill="{DynamicResource AmberBrush}"
+                                       Margin="0,0,8,0" RadiusX="2" RadiusY="2"/>
+                            <TextBlock Text="WEEKLY" FontWeight="SemiBold" FontSize="11"
+                                       Foreground="{DynamicResource AmberBrush}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="0,0,0,8">
+                        <Run x:Name="WeeklyTodoCount" FontWeight="SemiBold" Foreground="{DynamicResource Text0Brush}"/>
+                        <Run Text="{DynamicResource Str_CountTodo}" Foreground="{DynamicResource Text2Brush}" FontSize="12"/>
+                    </TextBlock>
+
+                    <Border Grid.Column="3" Style="{StaticResource ResetChipStyle}" Margin="0,0,0,8">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{DynamicResource Str_ResetIn}" Foreground="{DynamicResource Text2Brush}" FontSize="11"/>
+                            <TextBlock Text="{Binding WeeklyResetIn}" Foreground="{DynamicResource AmberBrush}"
+                                       FontSize="11" FontWeight="SemiBold" Margin="3,0,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <ItemsControl x:Name="WeeklyTodoList" ItemsSource="{Binding WeeklyTodo}"
+                          ItemTemplate="{StaticResource TodoTaskTemplate}"/>
+
+            <!-- ============ DONE section ============ -->
+            <Border Style="{StaticResource SectionSeparatorStyle}" Margin="0,24,0,10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource BadgeDoneStyle}" Margin="0,0,12,8">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="3" Height="14" Fill="{DynamicResource EmeraldBrush}"
+                                       Margin="0,0,8,0" RadiusX="2" RadiusY="2"/>
+                            <TextBlock Text="DONE" FontWeight="SemiBold" FontSize="11"
+                                       Foreground="{DynamicResource EmeraldTextBrush}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Daily done sub-section -->
+            <Button Style="{StaticResource CollapseButtonStyle}" Click="CollapseDailyDone_Click">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="DailyDoneChevron" Text="▾ " Foreground="{DynamicResource Text2Brush}" FontSize="11"/>
+                    <TextBlock Foreground="{DynamicResource Text2Brush}" FontSize="11">
+                        <Run Text="DAILY · " Foreground="{DynamicResource GoldBrush}"/>
+                        <Run x:Name="DailyDoneCount" Foreground="{DynamicResource Text2Brush}"/>
+                        <Run Text="{DynamicResource Str_CountDone}" Foreground="{DynamicResource Text2Brush}"/>
+                    </TextBlock>
+                </StackPanel>
+            </Button>
+
+            <ItemsControl x:Name="DailyDoneList" ItemsSource="{Binding DailyDone}"
+                          ItemTemplate="{StaticResource DoneTaskTemplate}"
+                          Margin="0,4,0,0"/>
+
+            <!-- Weekly done sub-section -->
+            <Button Style="{StaticResource CollapseButtonStyle}" Click="CollapseWeeklyDone_Click" Margin="0,10,0,0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="WeeklyDoneChevron" Text="▾ " Foreground="{DynamicResource Text2Brush}" FontSize="11"/>
+                    <TextBlock Foreground="{DynamicResource Text2Brush}" FontSize="11">
+                        <Run Text="WEEKLY · " Foreground="{DynamicResource AmberBrush}"/>
+                        <Run x:Name="WeeklyDoneCount" Foreground="{DynamicResource Text2Brush}"/>
+                        <Run Text="{DynamicResource Str_CountDone}" Foreground="{DynamicResource Text2Brush}"/>
+                    </TextBlock>
+                </StackPanel>
+            </Button>
+
+            <ItemsControl x:Name="WeeklyDoneList" ItemsSource="{Binding WeeklyDone}"
+                          ItemTemplate="{StaticResource DoneTaskTemplate}"
+                          Margin="0,4,0,0"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
